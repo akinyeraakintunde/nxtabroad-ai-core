@@ -1,0 +1,20 @@
+from nxtabroad_ai_core.models import ApplicantProfile
+from nxtabroad_ai_core.rules_engine import assess_eligibility
+from nxtabroad_ai_core.recommender import recommend_programmes
+
+profile = ApplicantProfile(
+    name="Test Student",
+    country_of_residence="Nigeria",
+    target_country="UK",
+    highest_qualification="BSc",
+    cgpa=3.4,
+    available_funds_gbp=15000,
+    years_of_work_experience=2,
+)
+
+eligibility_result = assess_eligibility(profile)
+recommendations = recommend_programmes(profile)
+
+print(eligibility_result.summary)
+for rec in recommendations:
+    print(rec.programme_name, rec.score)
