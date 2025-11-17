@@ -33,17 +33,17 @@ class LeadScorer:
         eligibility = self.rules_engine.evaluate(lead)
         explanations: List[str] = []
 
-        cgpa = float(lead.get("cgpa", 0.0))
-        funds = float(lead.get("available_funds_gbp", 0.0))
-        ielts = float(lead.get("ielts_overall", 0.0))
-        engagement = float(lead.get("engagement_score", 0.0))
+        cgpa = float(lead.get("cgpa", 0.0) or 0.0)
+        funds = float(lead.get("available_funds_gbp", 0.0) or 0.0)
+        ielts = float(lead.get("ielts_overall", 0.0) or 0.0)
+        engagement = float(lead.get("engagement_score", 0.0) or 0.0)
 
         # Academic sub-score (0–100)
         academic_ratio = min(cgpa / max(UK_THRESHOLDS.min_cgpa, 0.1), 1.5)
         academic_score = max(min(academic_ratio / 1.5 * 100, 100), 0)
 
         # Financial sub-score (0–100)
-        financial_ratio = min(funds / max(UK_THRESHOLDS.min_funds_gbp, 1), 1.5)
+        financial_ratio = min(funds / max(UK_THRESHOLDS.min_funds_gbp, 1.0), 1.5)
         financial_score = max(min(financial_ratio / 1.5 * 100, 100), 0)
 
         # Engagement sub-score (0–100)
@@ -56,7 +56,6 @@ class LeadScorer:
             "HIGH": 30,
         }.get(eligibility.risk_label, 0)
 
-        # Weighted score
         raw_score = (
             academic_score * DEFAULT_ACADEMIC_WEIGHT
             + financial_score * DEFAULT_FINANCIAL_WEIGHT
@@ -69,14 +68,13 @@ class LeadScorer:
         explanations.append(f"Academic score: {academic_score:.1f}/100 (CGPA={cgpa}).")
         explanations.append(f"Financial score: {financial_score:.1f}/100 (Funds=£{funds:,.0f}).")
         explanations.append(f"Engagement score: {engagement_score:.1f}/100.")
+        explanations.append(f"Overall risk level assessed as {eligibility.risk_label}.")
 
         if eligibility.violations:
             for v in eligibility.violations:
                 explanations.append(f"Rule violation [{v.severity}]: {v.message}")
         else:
             explanations.append("No critical eligibility issues detected.")
-
-        explanations.append(f"Overall risk level assessed as {eligibility.risk_label}.")
 
         return LeadScoreResult(
             score=round(final_score, 1),
