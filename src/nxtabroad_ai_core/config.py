@@ -16,6 +16,7 @@ UK_THRESHOLDS = CountryThresholds(
     min_ielts=6.0,
 )
 
+# Weights for the lead scoring model
 DEFAULT_ENGAGEMENT_WEIGHT = 0.2
 DEFAULT_ACADEMIC_WEIGHT = 0.3
 DEFAULT_FINANCIAL_WEIGHT = 0.3
