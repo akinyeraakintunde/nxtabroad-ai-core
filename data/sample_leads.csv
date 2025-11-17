@@ -1,0 +1,4 @@
+country,programme_level,cgpa,has_previous_visa_refusal,available_funds_gbp,cas_received,ielts_overall,engagement_score
+UK,postgraduate,3.5,False,18000,True,7.0,0.9
+UK,undergraduate,2.3,False,8000,False,5.5,0.6
+UK,postgraduate,3.0,True,12000,True,6.5,0.7
