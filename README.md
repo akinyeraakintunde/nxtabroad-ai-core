@@ -1,25 +1,58 @@
 # NxtAbroad AI Core
 
-Core logic for **NxtAbroad AI**, an AI-driven platform that helps African students and professionals
-plan global education and migration journeys. This library contains the rules engine, profile models,
-and recommendation logic used inside NxtAbroad AI and NxtAbroad Limited operations.
+**NxtAbroad AI** is an intelligent decision-support engine for international student recruitment and visa advisory.
 
-> **Author:** Ibrahim Akintunde Akinyera  
-> **Role:** Founder, System Architect & Lead Developer
+It powers:
+- Lead scoring for prospective students
+- Eligibility and risk triage (visa, finance, academic fit)
+- Automated recommendations for programmes, countries and intakes
 
----
-
-## Features (MVP)
-
-- **Profile models** for applicants (academic history, finances, preferences).
-- **Eligibility rules engine** for study/visa routes (starting with the UK and Canada).
-- **Programme recommendation stubs** that rank options based on constraints and goals.
-- **Document helpers** for sponsorship letters and financial breakdowns.
-- Designed to be integrated into a web API and dashboard.
+This repository contains the **core rules engine and scoring models** that sit behind the NxtAbroad platform.
 
 ---
 
-## Installation
+## Project Goals
 
-```bash
-pip install -e .
+- Replace manual, spreadsheet-based assessments with **consistent, auditable rules**.
+- Help advisors focus on **high-intent, high-potential leads**.
+- Provide a foundation for future **ML-driven recommendations** (conversion prediction, churn, etc.).
+
+---
+
+## Core Features
+
+- **Rules Engine**: Declarative rules for eligibility & risk (e.g. funds, grade, visa history).
+- **Lead Scoring**: 0–100 score based on academic fit, financial strength, visa risk & engagement.
+- **Data Pipeline**: Load leads from CSV/JSON and run them through the pipeline.
+- **Extensible Design**: Add new rules and dimensions without breaking the core.
+
+---
+
+## High-Level Architecture
+
+```text
+                     +-------------------------+
+                     |   Data Sources          |
+                     |  (CRM, Forms, CSV)      |
+                     +------------+------------+
+                                  |
+                                  v
+                         [ Data Pipeline ]
+                                  |
+                                  v
+                     +-------------------------+
+                     |    Rules Engine         |
+                     |  - eligibility rules    |
+                     |  - risk categories      |
+                     +------------+------------+
+                                  |
+                                  v
+                     +-------------------------+
+                     |    Lead Scoring         |
+                     |  - 0–100 score          |
+                     |  - reasons/explanations |
+                     +------------+------------+
+                                  |
+                                  v
+                         [ Downstream Systems ]
+                         CRM • Dashboards • Advisors
