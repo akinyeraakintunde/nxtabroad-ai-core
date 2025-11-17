@@ -4,6 +4,15 @@ from typing import Dict, List, Any
 from .config import UK_THRESHOLDS
 
 
+def _parse_bool(value: Any) -> bool:
+    """Safely parse booleans from CSV/JSON values."""
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, str):
+        return value.strip().lower() in {"1", "true", "yes", "y"}
+    return bool(value)
+
+
 @dataclass
 class RuleViolation:
     code: str
@@ -36,11 +45,11 @@ class EligibilityRulesEngine:
     def evaluate(self, lead: Dict[str, Any]) -> EligibilityResult:
         violations: List[RuleViolation] = []
 
-        country = lead.get("country", "UK")
-        cgpa = float(lead.get("cgpa", 0.0))
-        funds = float(lead.get("available_funds_gbp", 0.0))
-        has_refusal = bool(lead.get("has_previous_visa_refusal", False))
-        ielts = float(lead.get("ielts_overall", 0.0))
+        country = str(lead.get("country", "UK"))
+        cgpa = float(lead.get("cgpa", 0.0) or 0.0)
+        funds = float(lead.get("available_funds_gbp", 0.0) or 0.0)
+        has_refusal = _parse_bool(lead.get("has_previous_visa_refusal", False))
+        ielts = float(lead.get("ielts_overall", 0.0) or 0.0)
 
         # Country-specific thresholds (for now, only UK)
         thresholds = UK_THRESHOLDS if country.upper() == "UK" else UK_THRESHOLDS
@@ -85,7 +94,6 @@ class EligibilityRulesEngine:
                 )
             )
 
-        # Determine risk label based on violations
         risk_label = self._determine_risk_label(violations)
         is_eligible = risk_label != "HIGH"
 
